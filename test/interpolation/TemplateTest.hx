@@ -24,7 +24,7 @@ class TemplateTest
     }
 
 	@Test
-	@TestDebug
+	// @TestDebug
 	public function testSubsititue()
 	{
 		var t = new Template("my name is $name,i\'m $age old.");
@@ -32,7 +32,7 @@ class TemplateTest
 	}
 
     @Test
-    @TestDebug
+    // @TestDebug
     public function testNull()
     {
         var t = new Template("$null");
@@ -48,11 +48,11 @@ class TemplateTest
     }
 
     @Test
-    // @TestDebug
+    @TestDebug
     public function testSubsititueHasEnscape()
     {
         var t = new Template("my name is $${name}.");
-        Assert.areEqual('my name is $${name}.', t.substitute(context));
+        Assert.areEqual("my name is ${name}.", t.substitute(context));
     }
 
     @Test

@@ -22,4 +22,4 @@ before_install:
   - haxelib install munit
 
 script:
-  - haxelib run munit test -neko
+  - haxelib run munit test -neko -result-exit-code

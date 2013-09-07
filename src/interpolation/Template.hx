@@ -10,7 +10,7 @@ class Template
         this.template = template;
     }
 
-    function is_id(char):Bool
+    function is_id(char:String):Bool
     {
         var char_code:Int = char.charCodeAt(0);
 
@@ -84,7 +84,9 @@ class Template
                 if ("$" == char) {
                     point_delimiter = -1;
                     point_variable_start = -1;
-                    state = state_escape_dollar;
+                    // state = state_escape_dollar;
+                    // 脑抽了才会让$的转移变成两个$
+                    state = state_not_interpolation;
                 } else if ("{" == char) {
                     point_left_bracket = i;
                     point_variable_start += 1;
@@ -115,10 +117,9 @@ class Template
                 }
             }
 
-            if (state == state_escape_dollar) {
-                output.push("$");
-                state = state_not_interpolation;
-            }
+            // if (state == state_escape_dollar) {
+            //     state = state_not_interpolation;
+            // }
 
             if (state == state_not_interpolation)
                 output.push(char);
@@ -138,7 +139,7 @@ class Template
                 if (!context.exists(variable_name)) {
                     state = error_invalid_placeholder;
                 } else {
-                    value = context.get(variable_name);
+                    value = Std.string(context.get(variable_name));
                     output.push(value);
 
                     if (-1 == point_left_bracket && !state_last_character)
