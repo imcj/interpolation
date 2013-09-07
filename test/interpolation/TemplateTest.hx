@@ -4,12 +4,20 @@ import massive.munit.Assert;
 
 class TemplateTest
 {
+    #if haxe3
+    public var context:Map<Dynamic>;
+    #else
     public var context:Hash<Dynamic>;
+    #end
 
     @Before
     public function setUp()
     {
+        #if haxe3
         context = new Hash<Dynamic>();
+        #else
+        context = new Map<Dynamic>();
+        #end
         context.set("name", "cj");
         context.set("age", 28);
         context.set("null", null);
