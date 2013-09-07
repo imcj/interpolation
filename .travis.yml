@@ -20,7 +20,6 @@ before_install:
   - mkdir -p ~/.haxe/lib
   - echo ~/.haxe/lib | haxelib setup
   - haxelib install munit
-  - haxelib run openfl setup
 
 script:
   - haxelib run munit test -neko
