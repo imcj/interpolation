@@ -125,7 +125,11 @@ class Template
                 variable_name = template.substring(point_variable_start, 
                                           point_variable_end);
                 
+                #if haxe3
                 log(Std.format("variable variable_name:$variable_name"));
+                #else
+                log("variable variable_name:$variable_name");
+                #end
 
                 if (!context.exists(variable_name)) {
                     state = error_invalid_placeholder;
