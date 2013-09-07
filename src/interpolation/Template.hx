@@ -30,7 +30,11 @@ class Template
             trace(message);
     }
 
+    #if haxe3
+    function _substitute(context:Map<String, Dynamic>, safe)
+    #else
     function _substitute(context, safe)
+    #end
     {
         var char:String;
         var char_code:Int;
@@ -126,9 +130,9 @@ class Template
                                           point_variable_end);
                 
                 #if haxe3
-                log(Std.format("variable variable_name:$variable_name"));
-                #else
                 log("variable variable_name:$variable_name");
+                #else
+                log(Std.format("variable variable_name:$variable_name"));
                 #end
 
                 if (!context.exists(variable_name)) {

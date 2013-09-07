@@ -5,7 +5,7 @@ import massive.munit.Assert;
 class TemplateTest
 {
     #if haxe3
-    public var context:Map<Dynamic>;
+    public var context:Map<String, Dynamic>;
     #else
     public var context:Hash<Dynamic>;
     #end
@@ -14,9 +14,9 @@ class TemplateTest
     public function setUp()
     {
         #if haxe3
-        context = new Hash<Dynamic>();
+        context = new Map<String, Dynamic>();
         #else
-        context = new Map<Dynamic>();
+        context = new Hash<Dynamic>();
         #end
         context.set("name", "cj");
         context.set("age", 28);
@@ -59,8 +59,12 @@ class TemplateTest
     public function testSafeSubsititue()
     {
         var t = new Template("$name");
+        #if haxe3
+        var context2 = new Map<String, Dynamic>();
+        #else
         var context2 = new Hash<Dynamic>();
-        Assert.areEqual('$name', t.safe_substitute(context2));
+        #end
+        Assert.areEqual("$name", t.safe_substitute(context2));
     }
 
     @Test
@@ -68,6 +72,6 @@ class TemplateTest
     public function testSafeSubsititueMissingRightBracket()
     {
         var t = new Template("my name is ${name.");
-        Assert.areEqual('my name is ${name.', t.safe_substitute(context));
+        Assert.areEqual("my name is ${name.", t.safe_substitute(context));
     }
 }
