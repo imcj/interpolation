@@ -2,22 +2,20 @@ package interpolation;
 
 import massive.munit.Assert;
 
+#if haxe3
+import haxe.ds.StringMap;
+#else
+private typedef StringMap<T> = Hash<T>;
+#end
+
 class TemplateTest
 {
-    #if haxe3
-    public var context:Map<String, Dynamic>;
-    #else
-    public var context:Hash<Dynamic>;
-    #end
+    public var context:StringMap<Dynamic>;
 
     @Before
     public function setUp()
     {
-        #if haxe3
-        context = new Map<String, Dynamic>();
-        #else
-        context = new Hash<Dynamic>();
-        #end
+        context = new StringMap<Dynamic>();
         context.set("name", "cj");
         context.set("age", 28);
         context.set("null", null);
@@ -33,6 +31,14 @@ class TemplateTest
 
     @Test
     // @TestDebug
+    public function testVariableLast()
+    {
+        var t = new Template("my name is $name.");
+        Assert.areEqual('my name is cj.', t.substitute(context));
+    }
+
+    @Test
+    @TestDebug
     public function testNull()
     {
         var t = new Template("$null");
@@ -59,11 +65,7 @@ class TemplateTest
     public function testSafeSubsititue()
     {
         var t = new Template("$name");
-        #if haxe3
-        var context2 = new Map<String, Dynamic>();
-        #else
-        var context2 = new Hash<Dynamic>();
-        #end
+        var context2 = new StringMap<Dynamic>();
         Assert.areEqual("$name", t.safe_substitute(context2));
     }
 

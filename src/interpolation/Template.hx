@@ -1,5 +1,11 @@
 package interpolation;
 
+#if haxe3
+import haxe.ds.StringMap;
+#else
+private typedef StringMap<T> = Hash<T>;
+#end
+
 class Template
 {
     public var template(default, null):String;
@@ -30,14 +36,11 @@ class Template
             trace(message);
     }
 
-    #if haxe3
-    function _substitute(context:Map<String, Dynamic>, safe)
-    #else
     function _substitute(context, safe)
-    #end
     {
         var char:String;
         var char_code:Int;
+        var char_is_id:Bool = false;
         var output:Array<String> = [];
         var variable_name:String;
         var point_delimiter:Int = -1;
@@ -61,7 +64,8 @@ class Template
 
         var state_last_character:Bool = false;
 
-        for (i in 0...size) {
+        var i:Int = 0;
+        while(i < size) {
             char = template.charAt(i);
             char_code = char.charCodeAt(0);
             state_last_character = i == size - 1;
@@ -81,6 +85,7 @@ class Template
                     log("State changed to interpolation");
                 }
             } else if (state == state_interpolation) {
+                char_is_id = is_id(char);
                 if ("$" == char) {
                     point_delimiter = -1;
                     point_variable_start = -1;
@@ -96,13 +101,10 @@ class Template
                     state = state_matched_variable;
 
                     log("Matched right bracket and change state to matched variable.");
-                } else if (" " == char || i == size - 1 || !is_id(char)) {
+                } else if (i == size - 1 || !char_is_id) {
                     // 结束状态
                     state = state_matched_variable;
                     point_variable_end = i;
-
-                    if (i == size - 1)
-                        point_variable_end += 1;
 
                     if (point_left_bracket > -1) {
                         if (point_right_bracket == -1) {
@@ -113,13 +115,14 @@ class Template
 
                         point_variable_end = i;
                     }
+                    if (i == size - 1 && !char_is_id) {
+                        i -= 1;
+                    } else if (i == size - 1 && char_is_id) {
+                        point_variable_end += 1;
+                    }
                     log("State matched variable");
                 }
             }
-
-            // if (state == state_escape_dollar) {
-            //     state = state_not_interpolation;
-            // }
 
             if (state == state_not_interpolation)
                 output.push(char);
@@ -131,7 +134,7 @@ class Template
                                           point_variable_end);
                 
                 #if haxe3
-                log("variable variable_name:$variable_name");
+                log('variable variable_name:$variable_name');
                 #else
                 log(Std.format("variable variable_name:$variable_name"));
                 #end
@@ -163,6 +166,8 @@ class Template
                     point_variable_start = point_variable_end = -1;
                 }
             }
+
+            i += 1;
         }
 
         return output.join("");
