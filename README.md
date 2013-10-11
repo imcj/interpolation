@@ -3,29 +3,49 @@ Interpolation
 
 [![Build Status](https://travis-ci.org/imcj/interpolation.png?branch=master)](https://travis-ci.org/interpolation)
 
-为Haxe提供简单的字符串替换，类似perl或者shell的$符号，该类由
-[PEP209](http://www.python.org/dev/peps/pep-0292/) Simpler String Substitutions
-指导开发。
+You can use interpolation to perform string interpolation, using $ to identify the variables in the string :
 
-安装
------
+Install
+--------
 
     haxelib install interpolation
 
-使用说明
--------
+Using
+------
 
     import interpolation.Template;
 
-    var template = new Template("My name is.");
-    trace(template.substitute(context));
-    // My name is cj.
-
+    var template = new Template("My name is $name.");
     var context:Hash<Dynamic> = new Hash();
     context.set("name", "cj");
+
+    trace(template.substitute(context));
+    // will trace "My name is cj".
+
+You can also use {} curly braces to enclose a whole expression :
+
+    var template = new Template("My name is ${name}.");
+    var context:Hash<Dynamic> = new Hash();
+    context.set("name", "cj");
+
+    trace(template.substitute(context));
+    // will trace "My name is cj".
+
+If you want to output a single $, you can use $$ :
+
+    var template = new Template("My name is $$name.");
+    var context:Hash<Dynamic> = new Hash();
+    context.set("name", "cj");
+
+    trace(template.substitute(context));
+    // will trace "My name is $name".
+
+Feature
+--------
+
+[PEP209](http://www.python.org/dev/peps/pep-0292/) Simpler String Substitutions
 
 TODO
 -----
 
-- [PEP3101](http://www.python.org/dev/peps/pep-3101/) Advanced String Formmating 
-支持。
+- [PEP3101](http://www.python.org/dev/peps/pep-3101/) Advanced String Formmating
